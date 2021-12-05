@@ -33,3 +33,7 @@
 - babelがReferenceError: regeneratorRuntime is not definedのエラーを出す
 
 [Node.js + Babelで「ReferenceError: regeneratorRuntime is not defined」となる場合](https://www.aizulab.com/blog/referenceerror-regeneratorruntime-is-not-defined/)
+
+- cssのtypeエラー
+
+[How to import CSS modules with Typescript, React and Webpack](https://stackoverflow.com/questions/41336858/how-to-import-css-modules-with-typescript-react-and-webpack)
