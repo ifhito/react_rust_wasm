@@ -60,9 +60,12 @@ pub fn add_font_image(arr: Uint8Array, scale_height: f32, pixels_from_up: u32, p
 #[wasm_bindgen]
 pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
     console_error_panic_hook::set_once();
+    // glitchの感覚をランダムで選択するための初期値
     let glitch_list:Vec<u32> = vec![5,10,15,20,15,30];
     let glitch_list_i:Vec<u32> = vec![1,5,7,10,15,20];
+    // 色を変更するかどうかはランダムで決定する
     let glitch_boolean:Vec<bool> = vec![true, false];
+    // Javascriptから上がってきた行列を入れるバッファー
     let buffer: Vec<u8> = arr.to_vec();
     let mut img = load_from_memory(&buffer).expect("Error occurs at load image from buffer.");
     let (width, height) = img.dimensions();
@@ -70,24 +73,30 @@ pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
     let mut rng = rand::thread_rng();
     let mut choice = glitch_list.choose(&mut rng).unwrap();
     let mut i= *glitch_list_i.choose(&mut rng).unwrap();
+    //全てのピクセルに処理を行う
     for y in 0..height {
+        // 10が選択されたら10の倍数でglitchをする
         if y % choice == 0 {
+            // 次の部分の高さではflagは再度falseになり、その次の高さでずれる分の新しいglitchが作られる。
             if flag {
                 flag = false;
                 choice = glitch_list.choose(&mut rng).unwrap();
                 i= *glitch_list_i.choose(&mut rng).unwrap()
             }else {
+                //flagをtrueにしてpixelをずらす
                 flag = true;
             }
         }
-
+        // 全ての横幅のpixel分処理する
         for x in 0..width {
             let mut to_pixel;
+            // flagがtrueだった場合はi個先のpixelにずらす
             if flag == false {
                 to_pixel = img.get_pixel(x, y);
             }else{
                 to_pixel = img.get_pixel(i, y);
             }
+            // ランダムで色を変更するかが決まる。trueだったらそこの部分の色をランダムで変更する
             if *glitch_boolean.choose(&mut  rng).unwrap() == true{
                 // let red = to_pixel[0];
                 // let green = to_pixel[1];
@@ -97,6 +106,7 @@ pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
                 to_pixel = Rgba(new_color);
             }
             img.put_pixel(x, y, to_pixel);
+            //ずらし先のiはwidthを超えるとエラーになるので越えた段階でi=0とする
             if i >= width - 1{
                 i = 0;
             }else {
