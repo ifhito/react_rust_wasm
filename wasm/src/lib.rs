@@ -77,7 +77,7 @@ pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
     for y in 0..height {
         // 10が選択されたら10の倍数でglitchをする
         if y % choice == 0 {
-            // 次の部分の高さではflagは再度falseになり、その次の高さでずれる分の新しいglitchが作られる。
+            // 次に選択された倍数になる高さではflagは再度falseになり、その次の倍数の高さでずれる分の新しいglitchが作られる。
             if flag {
                 flag = false;
                 choice = glitch_list.choose(&mut rng).unwrap();
