@@ -1,1 +1,0 @@
-/Users/hotake/Documents/react_rust_wasm/wasm/target/wasm32-unknown-unknown/release/wasm.wasm: /Users/hotake/Documents/react_rust_wasm/wasm/assets/image/DelaGothicOne-Regular.ttf /Users/hotake/Documents/react_rust_wasm/wasm/src/lib.rs
