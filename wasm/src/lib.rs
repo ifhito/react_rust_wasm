@@ -100,26 +100,6 @@ pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
             img.put_pixel(x, y, to_pixel);
         }
     }
-    // for y in 0..height {
-    //     console::log_1(&JsValue::from(*choice));
-    //     if y % choice != 0 {
-    //         console::log_1(&JsValue::from(*choice));
-    //         let mut i = *glitch_list_x.choose(&mut rng).unwrap();
-    //         for x in 0..width{
-    //             let mut to_pixel = img.get_pixel(i, y);
-    //             if glitch_boolean.choose(&mut  rng).unwrap() == &true {
-    //                 let alpha = to_pixel[3];
-    //                 let new_color = [rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), alpha];
-    //                 to_pixel = Rgba(new_color);
-    //             }
-    //             img.put_pixel(x, y, to_pixel);
-    //             i = if i >= width -1 { 0 } else { i+1 };
-    //         }
-    //         choice = glitch_list_y.choose(&mut rng).unwrap();
-    //     } else {
-            
-    //     }
-    // }
     let result = save_to_buffer(img, fmt);
 
     Uint8Array::new(&unsafe { Uint8Array::view(&result)}.into())
