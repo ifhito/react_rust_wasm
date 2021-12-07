@@ -57,6 +57,14 @@ pub fn add_font_image(arr: Uint8Array, scale_height: f32, pixels_from_up: u32, p
 
     Uint8Array::new(&unsafe { Uint8Array::view(&result)}.into())
 }
+fn random_color_choice(red:u8, green:u8, blue:u8, alpha:u8) -> image::Rgba<u8>{
+    let mut rng = rand::thread_rng();
+    if [true, false].choose(&mut  rng).unwrap() == &true {
+        Rgba([rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), alpha])
+    }else{
+        Rgba([red, green, blue, alpha])
+    }
+}
 #[wasm_bindgen]
 pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
     console_error_panic_hook::set_once();
@@ -64,7 +72,7 @@ pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
     let glitch_list_x:Vec<u32> = vec![1,5,7,10,15,20];
     let glitch_list_y:Vec<u32> = vec![5,10,15,20,15,30];
     // 色を変更するかどうかはランダムで決定する
-    let glitch_boolean:Vec<bool> = vec![true, false];
+    // let glitch_boolean:Vec<bool> = vec![true, false];
     // Javascriptから上がってきた行列を入れるバッファー
     let buffer: Vec<u8> = arr.to_vec();
     let mut img = load_from_memory(&buffer).expect("Error occurs at load image from buffer.");
@@ -76,30 +84,37 @@ pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
         if n % choice != 0 {
             let mut i = *glitch_list_x.choose(&mut rng).unwrap();
             for _t in 0..*choice{
+                console::log_1(&JsValue::from(n+_t));
+                if n+_t >= height -1 {break};
                 for x in 0..width{
-                    let to_pixel = img.get_pixel(i, n+_t);
+                    let mut to_pixel = img.get_pixel(i, n+_t);
+                    to_pixel = random_color_choice(to_pixel[0], to_pixel[1], to_pixel[2], to_pixel[3]);
                     img.put_pixel(x, n+_t, to_pixel);
                     i = if i >= width -1 { 0 } else { i+1 };
                 }
-                if n+_t >= height -1 {break};
             }
             n += choice;
             choice = glitch_list_y.choose(&mut rng).unwrap();
         } else {
+            for x in 0..width{
+                let mut to_pixel = img.get_pixel(x, n);
+                to_pixel = random_color_choice(to_pixel[0], to_pixel[1], to_pixel[2], to_pixel[3]);
+                img.put_pixel(x, n, to_pixel);
+            }
             n += 1;
         }
-    }
-    for y in 0..height {
-        for x in 0..width {
-            let mut to_pixel = img.get_pixel(x, y);
-            if glitch_boolean.choose(&mut  rng).unwrap() == &true {
-                let alpha = to_pixel[3];
-                let new_color = [rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), alpha];
-                to_pixel = Rgba(new_color);
-            }
-            img.put_pixel(x, y, to_pixel);
-        }
-    }
+}
+    // for y in 0..height {
+    //     for x in 0..width {
+    //         let mut to_pixel = img.get_pixel(x, y);
+    //         if glitch_boolean.choose(&mut  rng).unwrap() == &true {
+    //             let alpha = to_pixel[3];
+    //             let new_color = [rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), rand::thread_rng().gen_range(0..255), alpha];
+    //             to_pixel = Rgba(new_color);
+    //         }
+    //         img.put_pixel(x, y, to_pixel);
+    //     }
+    // }
     let result = save_to_buffer(img, fmt);
 
     Uint8Array::new(&unsafe { Uint8Array::view(&result)}.into())
