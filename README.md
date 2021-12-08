@@ -37,3 +37,7 @@
 - cssのtypeエラー
 
 [How to import CSS modules with Typescript, React and Webpack](https://stackoverflow.com/questions/41336858/how-to-import-css-modules-with-typescript-react-and-webpack)
+
+- jpgが読まれないエラー
+
+[The global thread pool has not been initialized.: ThreadPoolBuildError { kind: IOError(Error { kind: Unsupported, message: "operation not supported on this platform" }) } ](https://github.com/image-rs/image/issues/1496)
