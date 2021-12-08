@@ -79,31 +79,27 @@ pub fn create_glitch(arr: Uint8Array, fmt: &str) -> Uint8Array{
     let (width, height) = img.dimensions();
     let mut rng = rand::thread_rng();
     let mut choice = glitch_list_y.choose(&mut rng).unwrap();
+    let mut boolean_glitch = [true, false].choose(&mut rng).unwrap();
     let mut n = 0;
     while n < height{
-        if n % choice != 0 {
-            let mut i = *glitch_list_x.choose(&mut rng).unwrap();
-            for _t in 0..*choice{
-                console::log_1(&JsValue::from(n+_t));
-                if n+_t >= height -1 {break};
-                for x in 0..width{
-                    let mut to_pixel = img.get_pixel(i, n+_t);
-                    to_pixel = random_color_choice(to_pixel[0], to_pixel[1], to_pixel[2], to_pixel[3]);
-                    img.put_pixel(x, n+_t, to_pixel);
-                    i = if i >= width -1 { 0 } else { i+1 };
-                }
-            }
-            n += choice;
-            choice = glitch_list_y.choose(&mut rng).unwrap();
-        } else {
+        let mut i = 0;
+        if boolean_glitch == &true {i = *glitch_list_x.choose(&mut rng).unwrap();}
+        let mut _t = 0;
+        while &_t < choice {
+            console::log_1(&JsValue::from(n+_t));
+            if n+_t >= height {break};
             for x in 0..width{
-                let mut to_pixel = img.get_pixel(x, n);
+                let mut to_pixel = img.get_pixel(i, n+_t);
                 to_pixel = random_color_choice(to_pixel[0], to_pixel[1], to_pixel[2], to_pixel[3]);
-                img.put_pixel(x, n, to_pixel);
+                img.put_pixel(x, n+_t, to_pixel);
+                i = if i >= width -1 { 0 } else { i+1 };
             }
-            n += 1;
+            _t += 1;
         }
-}
+        n += _t;
+        choice = glitch_list_y.choose(&mut rng).unwrap();
+        boolean_glitch = [true, false].choose(&mut rng).unwrap();
+    }
     // for y in 0..height {
     //     for x in 0..width {
     //         let mut to_pixel = img.get_pixel(x, y);
